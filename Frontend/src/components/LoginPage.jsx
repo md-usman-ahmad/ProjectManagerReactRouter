@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useRef } from "react";
-import { Link } from "react-router"
+import { Link , useNavigate } from "react-router"
 
 export function LoginPage(){
-
+    const navigate = useNavigate();
     const loginUsernameRef = useRef();
     const loginPasswordRef = useRef();
 
@@ -22,7 +22,8 @@ export function LoginPage(){
         .then((response)=>{
             console.log("login Response = ",response);
             alert(response.data.message);
-            localStorage.setItem("token",response.data.token)
+            localStorage.setItem("token",response.data.token);
+            navigate("/dashboard");
         })
         .catch((error)=>{
             console.log("login Error = ",error);
@@ -63,7 +64,8 @@ export function LoginPage(){
                         <button type="button" data-modal-target="forgotPassword" data-modal-toggle="forgotPassword" 
                           className="text-blue-600 underline cursor-pointer">change Password</button>
                         </p>
-                        <Link to="/" className="text-blue-600 underline cursor-pointer">Homepage</Link>
+                        <Link to="/" className="text-blue-600 underline cursor-pointer me-3">Homepage</Link>
+                        <Link to="/herosection" className="text-blue-600 underline cursor-pointer">Herosection</Link>
                     </div>
             </div>
         </div>

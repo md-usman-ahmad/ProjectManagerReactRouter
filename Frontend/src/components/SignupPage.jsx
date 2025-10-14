@@ -100,7 +100,8 @@ export function SignupPage(){
                         <p className="text-gray-600">Already have an account? 
                             <Link to="/login"  className="text-blue-700 hover:text-blue-700 underline">Login</Link>
                         </p>
-                        <Link to="/" className="text-blue-600 underline cursor-pointer">Homepage</Link>
+                        <Link to="/" className="text-blue-600 underline cursor-pointer me-3 ">Homepage</Link>
+                        <Link to="/herosection" className="text-blue-600 underline cursor-pointer ">Herosection</Link>
                     </div>
             </div>
         </div>
