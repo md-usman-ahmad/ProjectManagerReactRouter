@@ -20,7 +20,7 @@ Router.post("/",async function(request,response){
                 if(bcrypt.compareSync(loginPassword,outputFromDB[0].password)){
                     response.send({
                         message : "login successfull",
-                        token : jwt.sign({userId : outputFromDB[0].userId,firstname : outputFromDB[0].firstname},SECRET)
+                        token : jwt.sign({userId : outputFromDB[0].userId, username : outputFromDB[0].username},SECRET)
                     })
                 } else{
                     throw "Invalid Password";

@@ -1,4 +1,4 @@
-export function Sidebar({onClickAddProject}) {
+export function Sidebar({onClickAddProject,projects,onSelectingProject}) {
   return (
     <>
       <aside
@@ -24,9 +24,9 @@ export function Sidebar({onClickAddProject}) {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M9 1v16M1 9h16"
                   ></path>
                 </svg>
@@ -34,10 +34,10 @@ export function Sidebar({onClickAddProject}) {
               </a>
             </li>
 
-            {/* {projects.length === 0 && <h1 className="text-center text-white">Zero project added</h1>}
+            {projects.length === 0 && <h1 className="text-center text-white">Zero project added</h1>}
             {projects.length > 0 && projects.map((item) => {
               return (
-                <li className="border rounded text-xl" key={item.projectId} onClick={ ()=>{onClickingProjects(item.projectId)}}>
+                <li className="border rounded text-xl" key={item.projectId} onClick={ ()=>{onSelectingProject(item.projectId)}}>
                   <a
                     href="#"
                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group justify-center"
@@ -46,7 +46,7 @@ export function Sidebar({onClickAddProject}) {
                   </a>
                 </li>
               );
-            })} */}
+            })}
           </ul>
         </div>
       </aside>

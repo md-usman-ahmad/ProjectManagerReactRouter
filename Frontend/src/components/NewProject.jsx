@@ -1,8 +1,10 @@
 import { useRef} from "react";
 import {Input} from "./input.jsx"
 
-export function NewProject({onClickCancelBtn}) {
+export function NewProject({onClickCancelBtn , addingProject}) {
 
+const projectTitleRef = useRef();
+const projectDescriptionRef = useRef();
 
   return (
     <>
@@ -21,7 +23,7 @@ export function NewProject({onClickCancelBtn}) {
             <div className="md:w-2/3">
               <Input
                 id="ProjectTitle"
-               
+                ref={projectTitleRef}
                 type="text"
                 className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
@@ -40,7 +42,7 @@ export function NewProject({onClickCancelBtn}) {
             <div className="md:w-2/3">
               <Input
                 id="ProjectDescription"
-            
+                ref={projectDescriptionRef}
                 type="text"
                 className="appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
@@ -50,7 +52,11 @@ export function NewProject({onClickCancelBtn}) {
           <div className="md:flex md:items-center">
             <div className="md:w-1/3"></div>
             <div className="md:w-2/3">
-              <button 
+              <button onClick={()=>{
+                addingProject(projectTitleRef.current.value , projectDescriptionRef.current.value);
+                projectTitleRef.current.value = "";
+                projectDescriptionRef.current.value = "";
+            }}
                 className="shadow bg-gray-800 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 mx-2 rounded"
                 type="button"
               >

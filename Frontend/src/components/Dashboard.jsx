@@ -3,6 +3,8 @@ import { Mainmenu } from "./Mainmenu.jsx"
 import { useEffect, useState } from "react";
 import { NewProject } from "./NewProject.jsx"
 import { useNavigate } from "react-router";
+import { SelectedProject } from "./SelectedProject.jsx"
+import axios from "axios";
 
 
 export function Dashboard(){
@@ -19,7 +21,26 @@ console.log("Dashboard Token = ",token);
 
 useEffect( ()=>{
     if(token){
-
+        axios({
+            method : "GET",
+            url : "http://localhost:4500/ProjectOperations",
+            headers : {
+                authorization : localStorage.getItem("token")
+            }
+        })
+        .then( (response)=>{
+            console.log("getProject response = ",response);
+            let currentLoggedInUserAllProjects = response.data;
+            setProjectState( (prevState)=>{
+                return {
+                    ...prevState,
+                    projects : currentLoggedInUserAllProjects
+                }
+            })
+        })
+        .catch( (error)=>{
+            console.log("getProject Error = ",error);
+        })
     } else{
         navigate("/herosection");
     }
@@ -43,18 +64,76 @@ useEffect( ()=>{
         })
     }
 
+    const handleAddingProject = (projectTitle,projectDescription)=>{
+        console.log(projectTitle,projectDescription)
+        axios({
+            method : "POST",
+            url : "http://localhost:4500/projectOperations",
+            data : {
+                projectTitle,projectDescription
+            },
+            headers : {
+                authorization : localStorage.getItem("token")
+            }
+        })
+        .then((response)=>{
+            console.log("addProject response = ",response);
+            alert(response.data);
+            axios({
+                method : "GET",
+                url : "http://localhost:4500/projectOperations",
+                headers : {
+                    authorization : localStorage.getItem("token")
+                }
+            })
+            .then((response)=>{
+                console.log("Fetching Projects on Dashboard(sidebar) justafter addingProject = ",response);
+            })
+            .catch((error)=>{
+                console.log(error);
+            })
+        })
+        .catch((error)=>{
+            console.log("addProject error = ",error);
+        })
+    }
+    const handleOnSelectingProject = (projectId)=>{
+        setProjectState((prevState)=>{
+            return {
+                ...prevState,
+                selectedProjectId : projectId
+            }
+        })
+    }
+
+
 
     if(projectState.selectedProjectId === undefined){
         content = <Mainmenu></Mainmenu>
     }
     if(projectState.selectedProjectId === null){
-        content = <NewProject onClickCancelBtn={handleProjectCancelBtn}></NewProject>
+        content = <NewProject onClickCancelBtn={handleProjectCancelBtn} addingProject={handleAddingProject}></NewProject>
+    }
+
+    if(projectState.selectedProjectId){
+        const selectedProject = projectState.projects.filter( (item)=>(item.projectId === projectState.selectedProjectId));
+        console.log("selectedProject = ",selectedProject);
+
+        content = <SelectedProject 
+        selectedProject={selectedProject[0]}
+ 
+        ></SelectedProject>
     }
 
     return (
         <>
             <div className="flex">
-                <Sidebar onClickAddProject={handleOnClickAddProject}></Sidebar>
+                <Sidebar 
+                onClickAddProject={handleOnClickAddProject} 
+                projects={projectState.projects} 
+                onSelectingProject={handleOnSelectingProject}
+                >
+                </Sidebar>
                 {content}
             </div>
         </>
