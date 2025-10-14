@@ -1,6 +1,35 @@
+import axios from "axios";
+import { useRef } from "react";
 import { Link } from "react-router"
 
 export function LoginPage(){
+
+    const loginUsernameRef = useRef();
+    const loginPasswordRef = useRef();
+
+
+    const logging = ()=>{
+        let loginUsername = loginUsernameRef.current.value;
+        let loginPassword = loginPasswordRef.current.value;
+        console.log(loginUsername,loginPassword);
+        axios({
+            method : "POST",
+            url : "http://localhost:4500/login",
+            data : {
+                loginUsername,loginPassword
+            }
+        })
+        .then((response)=>{
+            console.log("login Response = ",response);
+            alert(response.data.message);
+            localStorage.setItem("token",response.data.token)
+        })
+        .catch((error)=>{
+            console.log("login Error = ",error);
+            alert(error.response.data);
+        })
+    }
+
     return (
         <>  
         <div className="flex justify-center mt-20">
@@ -12,11 +41,11 @@ export function LoginPage(){
                     <div className="space-y-6">
                         <div>
                             <label for="loginUsername1" className="block text-sm text-gray-600 mb-1">Username</label>
-                            <input   type="text" name="username" id="loginUsername1" required className="w-full px-0 py-3 border-0 border-b-2 border-gray-200 focus:outline-none focus:border-blue-500 transition-colors bg-transparent"/>
+                            <input ref={loginUsernameRef}  type="text" name="username" id="loginUsername1" required className="w-full px-0 py-3 border-0 border-b-2 border-gray-200 focus:outline-none focus:border-blue-500 transition-colors bg-transparent"/>
                         </div>
                         <div>
                             <label for="loginPassword1" className="block text-sm text-gray-600 mb-1">Password</label>
-                            <input   type="text" name="password" id="loginPassword1" required className="w-full px-0 py-3 border-0 border-b-2 border-gray-200 focus:outline-none focus:border-blue-500 transition-colors bg-transparent"/>
+                            <input ref={loginPasswordRef}  type="text" name="password" id="loginPassword1" required className="w-full px-0 py-3 border-0 border-b-2 border-gray-200 focus:outline-none focus:border-blue-500 transition-colors bg-transparent"/>
                         </div>
                         <div className="pt-4">
                             <button onClick={()=>{logging()}}  type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-none transition-colors uppercase tracking-wide">Login</button>

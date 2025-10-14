@@ -15,9 +15,9 @@ app.use(
 );
 
 const signupRouter = require("./Routes/signup.js");
-
+const loginRouter = require("./Routes/login.js");
 app.use("/signup", signupRouter);
-
+app.use("/login", loginRouter);
 
 
 app.listen(constants.PORT, async function(){
