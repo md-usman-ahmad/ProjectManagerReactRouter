@@ -1,7 +1,8 @@
 import { Sidebar } from "./sidebar.jsx"
 import { Mainmenu } from "./Mainmenu.jsx"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NewProject } from "./NewProject.jsx"
+import { useNavigate } from "react-router";
 
 
 export function Dashboard(){
@@ -11,6 +12,18 @@ const [projectState, setProjectState] = useState({
         selectedProjectId: undefined,
 });
 let content;
+
+const navigate = useNavigate();
+const token = localStorage.getItem("token");
+console.log("Dashboard Token = ",token);
+
+useEffect( ()=>{
+    if(token){
+
+    } else{
+        navigate("/herosection");
+    }
+},[])
 
     const handleOnClickAddProject = ()=>{
         setProjectState( (prevState)=>{
