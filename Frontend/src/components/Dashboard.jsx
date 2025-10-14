@@ -87,7 +87,14 @@ useEffect( ()=>{
                 }
             })
             .then((response)=>{
-                console.log("Fetching Projects on Dashboard(sidebar) justafter addingProject = ",response);
+                console.log("Fetching Projects on Dashboard(sidebar) justafter addingProject = ",response.data);
+                setProjectState( (prevState)=>{
+                    return {
+                        ...prevState,
+                        projects : response.data,
+                        selectedProjectId : response.data[response.data.length-1].projectId
+                    }
+                })
             })
             .catch((error)=>{
                 console.log(error);
@@ -121,7 +128,6 @@ useEffect( ()=>{
 
         content = <SelectedProject 
         selectedProject={selectedProject[0]}
- 
         ></SelectedProject>
     }
 
