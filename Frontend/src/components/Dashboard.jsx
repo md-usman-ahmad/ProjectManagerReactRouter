@@ -1,6 +1,6 @@
 import { Sidebar } from "./sidebar.jsx"
 import { Mainmenu } from "./Mainmenu.jsx"
-import { useEffect, useState } from "react";
+import { useEffect, useState , useReducer } from "react";
 import { NewProject } from "./NewProject.jsx"
 import { useNavigate } from "react-router";
 import { SelectedProject } from "./SelectedProject.jsx"
@@ -9,19 +9,75 @@ import {ProjectManagerContext} from "../store/contextProvider.js";
 
 
 export function Dashboard(){
-const [projectState, setProjectState] = useState({
-        projects: [],
-        tasks: [],
-        selectedProjectId: undefined,
-});
-let content;
+// const [projectState, setProjectState] = useState({
+//         projects: [],
+//         tasks: [],
+//         selectedProjectId: undefined,
+// });
+
+const reducerFn = (projectState,action)=>{
+    if(action.type === "FetchingDataOnLoggedIn"){
+        console.log("bbbbbbbbbbbb")
+        return {
+            ...projectState,
+            projects : action.payload.currentLoggedInUserAllProjects
+        }
+    }else if(action.type === "handleOnClickAddProject"){
+        return {
+            ...projectState,
+            selectedProjectId : null
+        }
+    } else if(action.type === "handleProjectCancelBtn"){
+        return {
+             ...projectState,
+            selectedProjectId : undefined
+        }   
+    } else if(action.type === "handleAddingProject"){
+        return {
+            ...projectState,
+            projects : action.payload.currentLoggedInUserAllProjects
+        }
+    } else if(action.type === "handleOnSelectingProject"){
+        return {
+                ...projectState,
+                selectedProjectId : action.payload.projectId
+            }
+    } else if(action.type === "handleProjectDelete"){
+        return {
+            ...projectState,
+            projects : action.payload.currentLoggedInUserAllProjects,
+            selectedProjectId : undefined
+        }
+    } else if(action.type === "handleProjectUpdate"){
+        return {
+            ...projectState,
+            projects : action.payload.currentLoggedInUserAllProjects,
+            selectedProjectId : action.payload.projectId
+        }
+    } else {
+        return {
+        ...projectState
+      }
+    }
+}
+const [projectState , dispatch] = useReducer(reducerFn, {
+    projects: [],
+    tasks: [],
+    selectedProjectId: undefined,
+})
+console.log("projectState = ",projectState);
+
+let content,currentLoggedInUserAllProjects;
+
 
 const navigate = useNavigate();
 const token = localStorage.getItem("token");
 console.log("Dashboard Token = ",token);
 
 useEffect( ()=>{
+    console.log("useEffect chlaaa");
     if(token){
+        console.log("aaaaaaaaaa")
         axios({
             method : "GET",
             url : "http://localhost:4500/ProjectOperations",
@@ -31,37 +87,33 @@ useEffect( ()=>{
         })
         .then( (response)=>{
             console.log("getProject response = ",response);
-            let currentLoggedInUserAllProjects = response.data;
-            setProjectState( (prevState)=>{
-                return {
-                    ...prevState,
-                    projects : currentLoggedInUserAllProjects
+            currentLoggedInUserAllProjects = response.data; 
+            dispatch({
+                type : "FetchingDataOnLoggedIn",
+                payload : {
+                    currentLoggedInUserAllProjects
                 }
             })
         })
         .catch( (error)=>{
             console.log("getProject Error = ",error);
         })
+        
     } else{
         navigate("/herosection");
     }
 },[])
 
+
     const handleOnClickAddProject = ()=>{
-        setProjectState( (prevState)=>{
-            return {
-                ...prevState,
-                selectedProjectId : null
-            }
+        dispatch({
+            type : 'handleOnClickAddProject',
         })
     }
 
     const handleProjectCancelBtn = ()=>{
-        setProjectState( (prevState)=>{
-            return {
-                ...prevState,
-                selectedProjectId : undefined
-            }
+        dispatch({
+            type : "handleProjectCancelBtn" 
         })
     }
 
@@ -89,11 +141,11 @@ useEffect( ()=>{
             })
             .then((response)=>{
                 console.log("Fetching Projects on Dashboard(sidebar) justafter addingProject = ",response.data);
-                setProjectState( (prevState)=>{
-                    return {
-                        ...prevState,
-                        projects : response.data,
-                        selectedProjectId : response.data[response.data.length-1].projectId
+                currentLoggedInUserAllProjects = response.data; 
+                dispatch({
+                    type : "handleAddingProject",
+                    payload : {
+                        currentLoggedInUserAllProjects,
                     }
                 })
             })
@@ -104,17 +156,20 @@ useEffect( ()=>{
         .catch((error)=>{
             console.log("addProject error = ",error);
         })
+
+
+        
     }
     const handleOnSelectingProject = (projectId)=>{
-        setProjectState((prevState)=>{
-            return {
-                ...prevState,
-                selectedProjectId : projectId
+        dispatch({
+            type : "handleOnSelectingProject",
+            payload : {
+                projectId,
             }
+
         })
     }
     const handleProjectDelete = (projectId)=>{
-
         axios({
             method : "DELETE",
             url : `http://localhost:4500/projectOperations?projectId=${projectId}`,
@@ -134,12 +189,12 @@ useEffect( ()=>{
             })
             .then((response)=>{
                 console.log("Fetching Projects on Dashboard(sidebar) justafter deletingProject = ",response.data);
-                setProjectState((prevState)=>{
-                    return {
-                        ...prevState,
-                        projects : response.data,
-                        selectedProjectId : undefined
-                    }    
+                currentLoggedInUserAllProjects = response.data;
+                dispatch({
+                    type : "handleProjectDelete",
+                    payload : {
+                        currentLoggedInUserAllProjects
+                    }
                 })
             })
         })
@@ -171,11 +226,12 @@ useEffect( ()=>{
             })
             .then((response)=>{
                 console.log("Fetching Projects on Dashboard(sidebar) justafter updatingProject = ",response.data);
-                setProjectState( (prevState)=>{
-                    return {
-                        ...prevState,
-                        projects : response.data,
-                        selectedProjectId : projectId
+                currentLoggedInUserAllProjects = response.data;
+                dispatch({
+                    type : "handleProjectUpdate",
+                    payload : {
+                        currentLoggedInUserAllProjects,
+                        projectId
                     }
                 })
             })
