@@ -1,7 +1,12 @@
 import axios from "axios";
 import { use, useRef, useState } from "react";
+import { useContext } from "react";
+import {ProjectManagerContext} from "../store/contextProvider.js";
 
-export function Card({ projectId, title, description , createdAt,updatedAt , projectDelete , projectUpdate}) {
+export function Card({ projectId, title, description , createdAt,updatedAt}) {
+    const {projectDelete , projectUpdate} = useContext(ProjectManagerContext);
+
+
     const [IsEditing , setIsEditing] = useState(false);
 
     const updatedProjectTitleRef = useRef();
@@ -61,7 +66,7 @@ export function Card({ projectId, title, description , createdAt,updatedAt , pro
                     projectUpdate(projectId,updatedProjectTitleRef.current.value, updatedProjectDescriptionRef.current.value);
                     setTimeout(()=>{
                         setIsEditing(false);
-                    },1000)
+                    },1000  )
                 }}
                     className="save-btn border border-green-400 text-green-400 hover:bg-green-900 px-3 py-1 rounded text-sm mr-2"
                   >

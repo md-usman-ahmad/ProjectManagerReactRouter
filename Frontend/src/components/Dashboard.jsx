@@ -5,6 +5,7 @@ import { NewProject } from "./NewProject.jsx"
 import { useNavigate } from "react-router";
 import { SelectedProject } from "./SelectedProject.jsx"
 import axios from "axios";
+import {ProjectManagerContext} from "../store/contextProvider.js";
 
 
 export function Dashboard(){
@@ -113,6 +114,7 @@ useEffect( ()=>{
         })
     }
     const handleProjectDelete = (projectId)=>{
+
         axios({
             method : "DELETE",
             url : `http://localhost:4500/projectOperations?projectId=${projectId}`,
@@ -145,6 +147,7 @@ useEffect( ()=>{
             console.log("deleteProject error = ",error);
         })
     }
+
     const handleProjectUpdate = (projectId,updatedTitle,updatedDescription)=>{
         axios({
             method : "PATCH",
@@ -197,13 +200,16 @@ useEffect( ()=>{
 
         content = <SelectedProject 
             selectedProject={selectedProject[0]}
-            projectDelete={handleProjectDelete}
-            projectUpdate={handleProjectUpdate}
         ></SelectedProject>
     }
 
     return (
         <>
+        <ProjectManagerContext value={{
+            projectDelete : handleProjectDelete,
+            projectUpdate : handleProjectUpdate
+        }}
+        >
             <div className="flex">
                 <Sidebar 
                 onClickAddProject={handleOnClickAddProject} 
@@ -213,6 +219,7 @@ useEffect( ()=>{
                 </Sidebar>
                 {content}
             </div>
+        </ProjectManagerContext>
         </>
     )
 }
