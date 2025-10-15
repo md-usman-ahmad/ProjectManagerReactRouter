@@ -1,10 +1,11 @@
 import axios from "axios";
-import { useRef, useState } from "react";
+import { use, useRef, useState } from "react";
 
-export function Card({ projectId, title, description , createdAt,updatedAt , projectDelete}) {
+export function Card({ projectId, title, description , createdAt,updatedAt , projectDelete , projectUpdate}) {
+    const [IsEditing , setIsEditing] = useState(false);
 
-    const [IsDeleted , setIsDeleted] = useState(false);
-
+    const updatedProjectTitleRef = useRef();
+    const updatedProjectDescriptionRef = useRef();
   return (
     <>
       <div className="flex border border-gray-700 rounded-lg p-4 bg-stone-800 shadow-sm mt-2  ">
@@ -13,19 +14,21 @@ export function Card({ projectId, title, description , createdAt,updatedAt , pro
         </div>
         <div className="flex  justify-between pl-3">
           <div className="flex-1 w-[300px]">
-            {false ? (
+            {IsEditing ? (
               <>
                 <input
                   type="text"
                   className="w-full bg-gray-700 border border-gray-600 text-white rounded px-3 py-1 mb-2 text-sm"
                   placeholder="Edit Title"
                   defaultValue={title}
+                  ref={updatedProjectTitleRef}
                 />
                 <input
                   type="text"
                   className="w-full bg-gray-700 border border-gray-600 text-white rounded px-3 py-1 text-sm"
                   placeholder="Edit Description"
                   defaultValue={description}
+                  ref={updatedProjectDescriptionRef}
                 />
               </>
             ) : (
@@ -52,9 +55,14 @@ export function Card({ projectId, title, description , createdAt,updatedAt , pro
 
           <div className="ml-4">
             <div className="action-buttons">
-              {false ? (
+              {IsEditing ? (
                 <>
-                  <button
+                  <button onClick={()=>{
+                    projectUpdate(projectId,updatedProjectTitleRef.current.value, updatedProjectDescriptionRef.current.value);
+                    setTimeout(()=>{
+                        setIsEditing(false);
+                    },1000)
+                }}
                     className="save-btn border border-green-400 text-green-400 hover:bg-green-900 px-3 py-1 rounded text-sm mr-2"
                   >
                     Save
@@ -75,21 +83,14 @@ export function Card({ projectId, title, description , createdAt,updatedAt , pro
                   >
                     Edit
                   </button>
-                  {false     ? <button  disabled 
-                    className="delete-btn border border-grey-400 text-grey-400 hover:bg-grey-900 px-3 py-1 rounded text-sm  "
-                  >
-                    Delete
-                  </button> : 
                   <button  onClick={()=>{projectDelete(projectId)}}
                     className="delete-btn border border-red-400 text-red-400 hover:bg-red-900 px-3 py-1 rounded text-sm  "
                   >
                     Delete
                   </button>
-              }
                 </>
               )}
             </div>
-            <div className="save-buttons hidden"></div>
           </div>
         </div>
       </div>

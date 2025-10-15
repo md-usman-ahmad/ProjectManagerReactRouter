@@ -3,14 +3,14 @@ import { Input } from "./input";
 
 import { useRef } from "react";
 
-export function SelectedProject({selectedProject , projectDelete}) {
+export function SelectedProject({selectedProject , projectDelete , projectUpdate}) {
   return (
     <>
-    <div class=" mx-auto px-10 py-4 rounded-lg ">
+    <div class=" mx-auto px-10 py-2 rounded-lg ">
         <div className="w-full">
-            <Card  {...selectedProject} projectDelete={projectDelete}></Card>
+            <Card  {...selectedProject} projectDelete={projectDelete} projectUpdate={projectUpdate}></Card>
         </div>
-      <div class="max-w-4xl mx-auto px-10 py-4 bg-white rounded-lg ">
+      <div class="max-w-4xl mx-auto px-10  bg-white rounded-lg ">
         <form class="pt-20">
           <div class=" mb-6 flex gap-2">
             <Input id="TaskTitle"  type="text" placeholder="Enter Title"></Input>

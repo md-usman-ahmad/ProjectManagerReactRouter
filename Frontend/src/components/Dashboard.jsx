@@ -145,6 +145,42 @@ useEffect( ()=>{
             console.log("deleteProject error = ",error);
         })
     }
+    const handleProjectUpdate = (projectId,updatedTitle,updatedDescription)=>{
+        axios({
+            method : "PATCH",
+            url : "http://localhost:4500/projectOperations",
+            data : {
+                projectId,updatedTitle,updatedDescription
+            },
+            headers : {
+                authorization: localStorage.getItem("token")
+            }
+        })
+        .then((response)=>{
+            console.log("updatedProject response = ",response);
+            alert(response.data);
+            axios({
+                method : "GET",
+                url : "http://localhost:4500/projectOperations",
+                headers : {
+                    authorization : localStorage.getItem("token")
+                }
+            })
+            .then((response)=>{
+                console.log("Fetching Projects on Dashboard(sidebar) justafter updatingProject = ",response.data);
+                setProjectState( (prevState)=>{
+                    return {
+                        ...prevState,
+                        projects : response.data,
+                        selectedProjectId : projectId
+                    }
+                })
+            })
+        })
+        .catch((error)=>{
+            console.log("updatedProject error = ",error)
+        })
+    }   
 
 
 
@@ -160,8 +196,9 @@ useEffect( ()=>{
         console.log("selectedProject = ",selectedProject);
 
         content = <SelectedProject 
-        selectedProject={selectedProject[0]}
-        projectDelete={handleProjectDelete}
+            selectedProject={selectedProject[0]}
+            projectDelete={handleProjectDelete}
+            projectUpdate={handleProjectUpdate}
         ></SelectedProject>
     }
 
