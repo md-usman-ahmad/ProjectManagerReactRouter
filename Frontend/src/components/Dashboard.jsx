@@ -112,6 +112,39 @@ useEffect( ()=>{
             }
         })
     }
+    const handleProjectDelete = (projectId)=>{
+        axios({
+            method : "DELETE",
+            url : `http://localhost:4500/projectOperations?projectId=${projectId}`,
+            headers : {
+                authorization : localStorage.getItem("token")
+            }
+        })
+        .then((response)=>{
+            console.log("deleteProject response = ",response);
+            alert(response.data);
+            axios({
+                method : "GET",
+                url : "http://localhost:4500/projectOperations",
+                headers : {
+                    authorization : localStorage.getItem("token")
+                }
+            })
+            .then((response)=>{
+                console.log("Fetching Projects on Dashboard(sidebar) justafter deletingProject = ",response.data);
+                setProjectState((prevState)=>{
+                    return {
+                        ...prevState,
+                        projects : response.data,
+                        selectedProjectId : undefined
+                    }    
+                })
+            })
+        })
+        .catch((error)=>{
+            console.log("deleteProject error = ",error);
+        })
+    }
 
 
 
@@ -128,6 +161,7 @@ useEffect( ()=>{
 
         content = <SelectedProject 
         selectedProject={selectedProject[0]}
+        projectDelete={handleProjectDelete}
         ></SelectedProject>
     }
 

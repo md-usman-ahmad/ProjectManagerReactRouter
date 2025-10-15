@@ -3,12 +3,12 @@ import { Input } from "./input";
 
 import { useRef } from "react";
 
-export function SelectedProject({selectedProject}) {
+export function SelectedProject({selectedProject , projectDelete}) {
   return (
     <>
     <div class=" mx-auto px-10 py-4 rounded-lg ">
         <div className="w-full">
-            <Card  {...selectedProject}></Card>
+            <Card  {...selectedProject} projectDelete={projectDelete}></Card>
         </div>
       <div class="max-w-4xl mx-auto px-10 py-4 bg-white rounded-lg ">
         <form class="pt-20">

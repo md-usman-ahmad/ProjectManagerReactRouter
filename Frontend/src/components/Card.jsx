@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useRef, useState } from "react";
 
-export function Card({ projectId, title, description , createdAt,updatedAt }) {
+export function Card({ projectId, title, description , createdAt,updatedAt , projectDelete}) {
 
     const [IsDeleted , setIsDeleted] = useState(false);
 
@@ -80,7 +80,7 @@ export function Card({ projectId, title, description , createdAt,updatedAt }) {
                   >
                     Delete
                   </button> : 
-                  <button 
+                  <button  onClick={()=>{projectDelete(projectId)}}
                     className="delete-btn border border-red-400 text-red-400 hover:bg-red-900 px-3 py-1 rounded text-sm  "
                   >
                     Delete

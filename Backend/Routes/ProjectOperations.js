@@ -62,7 +62,7 @@ Router.delete("/",async function(request,response){
             query = "delete from projects where projectId = ?";
             params = [projectId];
             await dbQuery(query,params);
-            response.send(`${currentLoggedInusername}(userId-${currentLoggedInuserId}) taskId-${taskId} deletedSuccessfully`)
+            response.send(`${currentLoggedInusername}(userId-${currentLoggedInuserId}) projectId-${projectId} deletedSuccessfully`)
         }else {
              throw "This Project is not from your projectList hence you cant delete";
          }
