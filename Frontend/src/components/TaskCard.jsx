@@ -3,14 +3,14 @@ import { use, useRef, useState } from "react";
 import { useContext } from "react";
 import {ProjectManagerContext} from "../store/contextProvider.js";
 
-export function TaskCard({selectedProjectId, taskId, title, description , createdAt,updatedAt}) {
+export function TaskCard({selectedProjectId, taskId, title, description , createdAt,updatedAt , updateTask}) {
     const {deleteTask} = useContext(ProjectManagerContext);
 
 
     const [IsEditing , setIsEditing] = useState(false);
 
-    // const updatedProjectTitleRef = useRef();
-    // const updatedProjectDescriptionRef = useRef();
+    const updatedTaskTitleRef = useRef();
+    const updatedTaskDescriptionRef = useRef();
   return (
     <>
       <div className="flex border border-gray-700 rounded-lg p-4 bg-stone-800 shadow-sm mt-2  ">
@@ -25,11 +25,15 @@ export function TaskCard({selectedProjectId, taskId, title, description , create
                   type="text"
                   className="w-full bg-gray-700 border border-gray-600 text-white rounded px-3 py-1 mb-2 text-sm"
                   placeholder="Edit Title"
+                  defaultValue={title}
+                  ref={updatedTaskTitleRef}
                 />
                 <input
                   type="text"
                   className="w-full bg-gray-700 border border-gray-600 text-white rounded px-3 py-1 text-sm"
                   placeholder="Edit Description"
+                  defaultValue={description}
+                  ref={updatedTaskDescriptionRef}
                 />
               </>
             ) : (
@@ -58,12 +62,19 @@ export function TaskCard({selectedProjectId, taskId, title, description , create
             <div className="action-buttons">
               {IsEditing ? (
                 <>
-                  <button 
+                  <button onClick={()=>{
+                    updateTask(selectedProjectId,taskId, updatedTaskTitleRef.current.value ,updatedTaskDescriptionRef.current.value);
+                    updatedTaskTitleRef.current.value="";
+                    updatedTaskDescriptionRef.current.value="";
+                    setTimeout(()=>{
+                        setIsEditing(false);
+                    },1000)
+                }}
                     className="save-btn border border-green-400 text-green-400 hover:bg-green-900 px-3 py-1 rounded text-sm mr-2"
                   >
                     Save
                   </button>
-                  <button
+                  <button onClick={()=>{setIsEditing(false)}}
                     className="cancel-btn border border-gray-400 text-gray-400 hover:bg-gray-700 px-3 py-1 rounded text-sm"
                   >
                     Cancel

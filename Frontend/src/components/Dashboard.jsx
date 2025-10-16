@@ -70,6 +70,11 @@ const reducerFn = (projectState,action)=>{
             ...projectState,
             tasks : action.payload.selectedProjectAllTasks
         }
+    } else if(action.type === "handleUpdateTask"){
+        return {
+            ...projectState,
+            tasks : action.payload.selectedProjectAllTasks
+        } 
     } else {
         return {
         ...projectState
@@ -92,6 +97,7 @@ console.log("Dashboard Token = ",token);
 
 useEffect( ()=>{
     console.log("useEffect chlaaa");
+     // userLogin hote hi saare projects fetch krrhe DB se 
     if(token){
         console.log("aaaaaaaaaa")
         axios({
@@ -124,30 +130,32 @@ useEffect( ()=>{
     // selectedProject ke saare tasks fetch krrhe DB se 
     console.log("useEffect, selectedProjectId  = ",projectState.selectedProjectId);
         selectedProjId = projectState.selectedProjectId;
-    axios({
-            method : "GET",
-            url : "http://localhost:4500/taskOperations",
-            headers : {
-                authorization : localStorage.getItem("token")
-            },
-            params : {
-                selectedProjId
-            }
-        })
-        .then((response)=>{
-            console.log("getTasks response.data = ",response.data);
-            // alert(response.data.message);
-            selectedProjectAllTasks = response.data;
-            dispatch({
-                type : "FetchingSelectedProjectTasks",
-                payload : {
-                    selectedProjectAllTasks
+        if(projectState.selectedProjectId !== undefined && projectState.selectedProjectId !== null){
+            axios({
+                method : "GET",
+                url : "http://localhost:4500/taskOperations",
+                headers : {
+                    authorization : localStorage.getItem("token")
+                },
+                params : {
+                    selectedProjId
                 }
             })
-        })
-        .catch((error)=>{
-            console.log("getTask error = ",error)
-        })
+            .then((response)=>{
+                console.log("getTasks response.data = ",response.data);
+                // alert(response.data.message);
+                selectedProjectAllTasks = response.data;
+                dispatch({
+                    type : "FetchingSelectedProjectTasks",
+                    payload : {
+                        selectedProjectAllTasks
+                    }
+                })
+            })
+            .catch((error)=>{
+                console.log("getTask error = ",error)
+            })
+        }
 },[projectState.selectedProjectId])
 
         // Project Operations 
@@ -364,6 +372,43 @@ useEffect( ()=>{
             console.log("deleteTask error = ",error);
         })
     }
+    const handleUpdateTask = (selectedProjectId, taskId, updatedTitle, updatedDescription)=>{
+        console.log(selectedProjectId, taskId, updatedTitle, updatedDescription);
+        selectedProjId = selectedProjectId;
+        axios({
+            method : "PATCH",
+            url : "http://localhost:4500/taskOperations",
+            headers : {
+                authorization : localStorage.getItem("token")
+            },
+            data : {
+                selectedProjId, taskId, updatedTitle, updatedDescription
+            }
+        })
+        .then((response)=>{
+            console.log("updateTask response.data = ",response.data);
+            alert(response.data);
+            selectedProjectAllTasks = response.data;
+            axios({
+                method : "GET",
+                url : `http://localhost:4500/taskOperations?selectedProjId=${selectedProjId}`,
+                headers : {
+                    authorization : localStorage.getItem("token")
+                }
+            })
+            .then((response)=>{
+                console.log("Fetching Tasks on Dashboard(selectedProject) justafter updatingTask = ",response.data);
+                selectedProjectAllTasks = response.data;
+                dispatch({
+                    type : "handleUpdateTask",
+                    payload : {selectedProjectAllTasks}
+                })
+            })
+        })
+        .catch((error)=>{
+            console.log("updateTask error = ",error);
+        })
+    }
 
 
     if(projectState.selectedProjectId === undefined){
@@ -382,6 +427,7 @@ useEffect( ()=>{
             selectedProject={selectedProject[0]}
             addingTask={handleAddingTask}
             selectedProjectAllTasks={selectedProjectAllTasks}
+            updateTask={handleUpdateTask}
         ></SelectedProject>
     }
 

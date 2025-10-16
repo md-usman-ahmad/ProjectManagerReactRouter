@@ -16,7 +16,7 @@ Router.get("/",async function(request,response){
         let query = "select * from tasks where pId = ? AND createdBy = ?";
         let params = [selectedProjId , currentLoggedInuserId];
         let  outputFromDB = await dbQuery(query,params);
-        console.log(`${currentLoggedInusername}(userId-${currentLoggedInuserId}   all Tasks = `,outputFromDB);
+        console.log(`${currentLoggedInusername}(userId-${currentLoggedInuserId})   all Tasks = `,outputFromDB);
         response.send(outputFromDB);
     } catch (error) {
         console.log("getTask error = ",error);
@@ -63,5 +63,26 @@ Router.delete("/",async function(request,response){
     }
 })
 
+Router.patch("/",async function(request,response){
+    try {
+        console.log("request.originalUrl = ",request.originalUrl);
+        console.log("request.method = ",request.method);
+        console.log("request.body = ",request.body);
+        const {selectedProjId , taskId , updatedTitle , updatedDescription} = request.body;
+        const {currentLoggedInuserId , currentLoggedInusername} = request;
+
+        let query =  `update tasks
+                      set title = ? , description = ? , updatedAt = ?
+                      where taskId = ? AND pId = ? AND createdBy = ?  
+                     `
+        let params = [updatedTitle,updatedDescription,new Date().toISOString().slice(0, 19), taskId ,selectedProjId,currentLoggedInuserId];
+        await dbQuery(query,params);
+
+        response.send(`${currentLoggedInusername}(userId-${currentLoggedInuserId}) projectId_${selectedProjId} TaskId(${taskId}) Updated Successfully`)
+    } catch (error) {
+        console.log("UpdateTask error = ",error);
+        response.status(500).send(error)
+    }
+})
 
 module.exports = Router;

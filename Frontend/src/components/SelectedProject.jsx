@@ -4,7 +4,7 @@ import { Input } from "./input";
 
 import { useRef } from "react";
 
-export function SelectedProject({selectedProject , addingTask , selectedProjectAllTasks}) {
+export function SelectedProject({selectedProject , addingTask , selectedProjectAllTasks , updateTask}) {
     const taskTitleRef = useRef();
     const taskDescriptionRef = useRef();    
 
@@ -36,7 +36,7 @@ export function SelectedProject({selectedProject , addingTask , selectedProjectA
         {selectedProjectAllTasks.length > 0 && selectedProjectAllTasks.map((item) => {
           return (
             <>
-                <TaskCard key={item.taskId} {...item} selectedProjectId={selectedProject.projectId} ></TaskCard>
+                <TaskCard key={item.taskId} {...item} selectedProjectId={selectedProject.projectId} updateTask={updateTask} ></TaskCard>
             </>
         );
         })}

@@ -72,7 +72,7 @@ export function Card({ projectId, title, description , createdAt,updatedAt}) {
                   >
                     Save
                   </button>
-                  <button
+                  <button onClick={()=>{setIsEditing(false)}}
                     className="cancel-btn border border-gray-400 text-gray-400 hover:bg-gray-700 px-3 py-1 rounded text-sm"
                   >
                     Cancel
