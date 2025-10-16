@@ -3,8 +3,8 @@ import { use, useRef, useState } from "react";
 import { useContext } from "react";
 import {ProjectManagerContext} from "../store/contextProvider.js";
 
-export function TaskCard({selectedProjectId, taskId, title, description , createdAt,updatedAt , updateTask}) {
-    const {deleteTask} = useContext(ProjectManagerContext);
+export function TaskCard({selectedProjectId, taskId, title, description , createdAt,updatedAt}) {
+    const {deleteTask,updateTask} = useContext(ProjectManagerContext);
 
 
     const [IsEditing , setIsEditing] = useState(false);

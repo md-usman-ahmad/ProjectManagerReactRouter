@@ -427,7 +427,6 @@ useEffect( ()=>{
             selectedProject={selectedProject[0]}
             addingTask={handleAddingTask}
             selectedProjectAllTasks={selectedProjectAllTasks}
-            updateTask={handleUpdateTask}
         ></SelectedProject>
     }
 
@@ -436,7 +435,8 @@ useEffect( ()=>{
         <ProjectManagerContext value={{
             projectDelete : handleProjectDelete,
             projectUpdate : handleProjectUpdate,
-            deleteTask : handleDeleteTask
+            deleteTask : handleDeleteTask,
+            updateTask : handleUpdateTask
         }}
         >
             <div className="flex">
