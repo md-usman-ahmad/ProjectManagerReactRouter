@@ -65,6 +65,11 @@ const reducerFn = (projectState,action)=>{
             ...projectState,
             tasks : action.payload.selectedProjectAllTasks
         }
+    } else if(action.type === "handleDeleteTask"){
+        return {
+            ...projectState,
+            tasks : action.payload.selectedProjectAllTasks
+        }
     } else {
         return {
         ...projectState
@@ -324,7 +329,41 @@ useEffect( ()=>{
         })
     }
 
-
+    const handleDeleteTask = (selectedProjectId,taskId)=>{
+        console.log(selectedProjectId , taskId);
+        selectedProjId = selectedProjectId;
+        axios({
+            method : "DELETE",
+            url : `http://localhost:4500/taskOperations?selectedProjId=${selectedProjId}&taskId=${taskId}`,
+            headers : {
+                authorization : localStorage.getItem("token")
+            },
+        })
+        .then((response)=>{
+            console.log("deleteTask response = ",response);
+            alert(response.data);
+            axios({
+                method : "GET",
+                url : `http://localhost:4500/taskOperations?selectedProjId=${selectedProjId}`,
+                headers : {
+                    authorization : localStorage.getItem("token")
+                }
+            })
+            .then((response)=>{
+                console.log("Fetching Tasks on Dashboard(selectedProject) justafter addingTask = ",response.data);
+                selectedProjectAllTasks = response.data;
+                dispatch({
+                    type : "handleDeleteTask",
+                    payload : {
+                        selectedProjectAllTasks
+                    }
+                })  
+            })
+        })
+        .catch((error)=>{
+            console.log("deleteTask error = ",error);
+        })
+    }
 
 
     if(projectState.selectedProjectId === undefined){
@@ -350,7 +389,8 @@ useEffect( ()=>{
         <>
         <ProjectManagerContext value={{
             projectDelete : handleProjectDelete,
-            projectUpdate : handleProjectUpdate
+            projectUpdate : handleProjectUpdate,
+            deleteTask : handleDeleteTask
         }}
         >
             <div className="flex">

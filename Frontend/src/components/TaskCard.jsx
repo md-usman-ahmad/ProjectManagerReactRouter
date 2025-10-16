@@ -3,11 +3,11 @@ import { use, useRef, useState } from "react";
 import { useContext } from "react";
 import {ProjectManagerContext} from "../store/contextProvider.js";
 
-export function TaskCard({ taskId, title, description , createdAt,updatedAt}) {
-    // const {projectDelete , projectUpdate} = useContext(ProjectManagerContext);
+export function TaskCard({selectedProjectId, taskId, title, description , createdAt,updatedAt}) {
+    const {deleteTask} = useContext(ProjectManagerContext);
 
 
-    // const [IsEditing , setIsEditing] = useState(false);
+    const [IsEditing , setIsEditing] = useState(false);
 
     // const updatedProjectTitleRef = useRef();
     // const updatedProjectDescriptionRef = useRef();
@@ -19,7 +19,7 @@ export function TaskCard({ taskId, title, description , createdAt,updatedAt}) {
         </div>
         <div className="flex  justify-between pl-3">
           <div className="flex-1 w-[300px]">
-            {false ? (
+            {IsEditing ? (
               <>
                 <input
                   type="text"
@@ -56,7 +56,7 @@ export function TaskCard({ taskId, title, description , createdAt,updatedAt}) {
 
           <div className="ml-4">
             <div className="action-buttons">
-              {false ? (
+              {IsEditing ? (
                 <>
                   <button 
                     className="save-btn border border-green-400 text-green-400 hover:bg-green-900 px-3 py-1 rounded text-sm mr-2"
@@ -79,7 +79,7 @@ export function TaskCard({ taskId, title, description , createdAt,updatedAt}) {
                   >
                     Edit
                   </button>
-                  <button  
+                  <button  onClick={()=>{deleteTask(selectedProjectId,taskId)}}
                     className="delete-btn border border-red-400 text-red-400 hover:bg-red-900 px-3 py-1 rounded text-sm  "
                   >
                     Delete

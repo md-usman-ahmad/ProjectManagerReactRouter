@@ -10,8 +10,9 @@ Router.get("/",async function(request,response){
         console.log("request.originalUrl = ",request.originalUrl);
         console.log("request.method = ",request.method);
         console.log("request.query = ",request.query);
-        const {selectedProjId , projectId} = request.query;
+        const {selectedProjId} = request.query;
         const {currentLoggedInuserId , currentLoggedInusername} = request;
+
         let query = "select * from tasks where pId = ? AND createdBy = ?";
         let params = [selectedProjId , currentLoggedInuserId];
         let  outputFromDB = await dbQuery(query,params);
@@ -38,6 +39,26 @@ Router.post("/",async function(request,response){
         response.send(`${currentLoggedInusername}(userId-${currentLoggedInuserId}) projectId_${projectId}) Task(${taskTitle}) Added Successfully`)
     } catch (error) {
         console.log("postTask error = ",error);
+        response.status(500).send(error)
+    }
+})
+
+Router.delete("/",async function(request,response){
+    try {
+        console.log("request.originalUrl = ",request.originalUrl);
+        console.log("request.method = ",request.method);
+        console.log("request.query = ",request.query);
+
+        const {selectedProjId , taskId} = request.query;
+        const {currentLoggedInuserId , currentLoggedInusername} = request;
+        let query = "delete from tasks where taskId = ? AND pId = ? AND createdBy = ?";
+        let params = [taskId,selectedProjId,currentLoggedInuserId];
+        await dbQuery(query,params);
+
+        response.send(`${currentLoggedInusername}(userId-${currentLoggedInuserId}) projectId_${selectedProjId}) TaskId(${taskId}) Deleted Successfully`)
+
+    } catch (error) {
+        console.log("deleteTask error = ",error);
         response.status(500).send(error)
     }
 })

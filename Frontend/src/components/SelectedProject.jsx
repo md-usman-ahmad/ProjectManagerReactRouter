@@ -36,7 +36,7 @@ export function SelectedProject({selectedProject , addingTask , selectedProjectA
         {selectedProjectAllTasks.length > 0 && selectedProjectAllTasks.map((item) => {
           return (
             <>
-                <TaskCard key={item.taskId} {...item} ></TaskCard>
+                <TaskCard key={item.taskId} {...item} selectedProjectId={selectedProject.projectId} ></TaskCard>
             </>
         );
         })}
