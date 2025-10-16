@@ -40,10 +40,10 @@ const reducerFn = (projectState,action)=>{
     } else if(action.type === "handleAddingProject"){
         return {
             ...projectState,
-            projects : action.payload.currentLoggedInUserAllProjects
+            projects : action.payload.currentLoggedInUserAllProjects,
+            selectedProjectId : action.payload.selectedProjId
         }
     } else if(action.type === "handleOnSelectingProject"){
-        console.log("projectId 2 = ",action.payload.projectId);
         return {
                 ...projectState,
                 selectedProjectId : action.payload.projectId
@@ -60,21 +60,6 @@ const reducerFn = (projectState,action)=>{
             projects : action.payload.currentLoggedInUserAllProjects,
             selectedProjectId : action.payload.projectId
         }
-    } else if(action.type === "handleAddingTask"){
-        return {
-            ...projectState,
-            tasks : action.payload.selectedProjectAllTasks
-        }
-    } else if(action.type === "handleDeleteTask"){
-        return {
-            ...projectState,
-            tasks : action.payload.selectedProjectAllTasks
-        }
-    } else if(action.type === "handleUpdateTask"){
-        return {
-            ...projectState,
-            tasks : action.payload.selectedProjectAllTasks
-        } 
     } else {
         return {
         ...projectState
@@ -196,10 +181,12 @@ useEffect( ()=>{
             .then((response)=>{
                 console.log("Fetching Projects on Dashboard(sidebar) justafter addingProject = ",response.data);
                 currentLoggedInUserAllProjects = response.data; 
+                selectedProjId = currentLoggedInUserAllProjects[currentLoggedInUserAllProjects.length-1].projectId;
                 dispatch({
                     type : "handleAddingProject",
                     payload : {
                         currentLoggedInUserAllProjects,
+                        selectedProjId
                     }
                 })
             })
@@ -325,7 +312,7 @@ useEffect( ()=>{
                 console.log("Fetching Tasks on Dashboard(selectedProject) justafter addingTask = ",response.data);
                 selectedProjectAllTasks = response.data;
                 dispatch({
-                    type : "handleAddingTask",
+                    type : "FetchingSelectedProjectTasks",
                     payload : {
                         selectedProjectAllTasks
                     }
@@ -361,7 +348,7 @@ useEffect( ()=>{
                 console.log("Fetching Tasks on Dashboard(selectedProject) justafter addingTask = ",response.data);
                 selectedProjectAllTasks = response.data;
                 dispatch({
-                    type : "handleDeleteTask",
+                    type : "FetchingSelectedProjectTasks",
                     payload : {
                         selectedProjectAllTasks
                     }
@@ -400,7 +387,7 @@ useEffect( ()=>{
                 console.log("Fetching Tasks on Dashboard(selectedProject) justafter updatingTask = ",response.data);
                 selectedProjectAllTasks = response.data;
                 dispatch({
-                    type : "handleUpdateTask",
+                    type : "FetchingSelectedProjectTasks",
                     payload : {selectedProjectAllTasks}
                 })
             })

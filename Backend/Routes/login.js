@@ -3,7 +3,7 @@ const dbQuery = require("../database/dbhelper");
 const Router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
-const {SECRET} = require("../constants.js");
+const {SECRET, SALTROUND} = require("../constants.js");
 
 Router.post("/",async function(request,response){
     try {
@@ -33,6 +33,27 @@ Router.post("/",async function(request,response){
         }
     } catch (error) {
         console.log("login error = ",error)
+        response.status(500).send(error);
+    }
+})
+Router.patch("/",async function(request,response){
+    try {
+        console.log("request.originalUrl = ",request.originalUrl);
+        console.log("request.method = ",request.method);
+        console.log("request.body = ",request.body);
+
+        const {fpUsername , fpPassword} = request.body;
+        const {currentLoggedInuserId} = request;
+
+        let query = `update users 
+                     set password = ?
+                     where username = ?
+                    `
+        let params = [bcrypt.hashSync(fpPassword,SALTROUND) , fpUsername];
+        await dbQuery(query,params);
+        response.send(`${fpUsername}(userId-${currentLoggedInuserId}) password Changed Sucessfully`);
+    } catch (error) {
+        console.log("forgotPassword error = ",error)
         response.status(500).send(error);
     }
 })

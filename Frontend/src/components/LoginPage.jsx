@@ -6,6 +6,8 @@ export function LoginPage(){
     const navigate = useNavigate();
     const loginUsernameRef = useRef();
     const loginPasswordRef = useRef();
+    const fpUsernameRef = useRef();
+    const fpPasswordRef = useRef();
 
 
     const logging = ()=>{
@@ -28,6 +30,28 @@ export function LoginPage(){
         .catch((error)=>{
             console.log("login Error = ",error);
             alert(error.response.data);
+        })
+    }
+
+    const forgotPassword = ()=>{
+        const fpUsername = fpUsernameRef.current.value;
+        const fpPassword = fpPasswordRef.current.value;
+        axios({
+          method : "PATCH",
+          url : "http://localhost:4500/login",
+          headers : {
+            Authorization : localStorage.getItem("token")
+          },
+          data : {
+            fpUsername , fpPassword
+          }
+        })
+        .then((response)=>{
+          console.log("forgotPassword response",response);
+          alert(response.data);
+        })
+        .catch((error)=>{
+          console.log("errorPassword = ",error);
         })
     }
 
@@ -61,7 +85,7 @@ export function LoginPage(){
                             <Link to="/signup"  className="text-blue-700 hover:text-blue-700 underline">Signup</Link>
                         </p>
                         <p className="text-gray-600">Forgot Password? 
-                        <button type="button" data-modal-target="forgotPassword" data-modal-toggle="forgotPassword" 
+                        <button type="button"data-modal-target="forgotPassword" data-modal-toggle="forgotPassword" 
                           className="text-blue-600 underline cursor-pointer">change Password</button>
                         </p>
                         <Link to="/" className="text-blue-600 underline cursor-pointer me-3">Homepage</Link>
@@ -113,11 +137,11 @@ export function LoginPage(){
             <div className="space-y-6 p-6">
                 <div>
                     <label className="block text-sm text-white-700 mb-1">Username</label>
-                    <input  type="text" placeholder="Enter Username" className="text-white w-full px-0 py-3 border-0 border-b-2 border-white-200 focus:outline-none focus:border-white-500 transition-colors bg-transparent"/>
+                    <input ref={fpUsernameRef} type="text" placeholder="Enter Username" className="text-white w-full px-0 py-3 border-0 border-b-2 border-white-200 focus:outline-none focus:border-white-500 transition-colors bg-transparent"/>
                 </div>
                 <div>
                     <label className="block text-sm text-white-600 mb-1">Password</label>
-                    <input   type="text" placeholder="Enter New Password" className="text-white w-full px-0 py-3 border-0 border-b-2 border-gray-200 focus:outline-none focus:border-white-500 transition-colors bg-transparent"/>
+                    <input ref={fpPasswordRef}  type="text" placeholder="Enter New Password" className="text-white w-full px-0 py-3 border-0 border-b-2 border-gray-200 focus:outline-none focus:border-white-500 transition-colors bg-transparent"/>
                 </div>
             </div>
             {/* <!-- Modal footer --> */}
