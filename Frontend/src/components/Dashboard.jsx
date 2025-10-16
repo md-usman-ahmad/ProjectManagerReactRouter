@@ -60,7 +60,12 @@ const reducerFn = (projectState,action)=>{
             projects : action.payload.currentLoggedInUserAllProjects,
             selectedProjectId : action.payload.projectId
         }
-    }else {
+    } else if(action.type === "handleAddingTask"){
+        return {
+            ...projectState,
+            tasks : action.payload.selectedProjectAllTasks
+        }
+    } else {
         return {
         ...projectState
       }
@@ -277,7 +282,48 @@ useEffect( ()=>{
         })
     }   
 
-    
+        // Task Operations 
+    const handleAddingTask = (projectId,taskTitle,taskDescription)=>{
+        console.log(projectId,taskTitle,taskDescription)
+        selectedProjId = projectId;
+        axios({
+            method : "POST",
+            url : "http://localhost:4500/taskOperations",
+            data : {
+                projectId , taskTitle , taskDescription
+            },
+            headers : {
+                authorization : localStorage.getItem("token")
+            }
+        })
+        .then((response)=>{
+            console.log("addTask response = ",response);
+            axios({
+                method : "GET",
+                url : "http://localhost:4500/taskOperations",
+                headers : {
+                    authorization : localStorage.getItem("token")
+                },
+                params : {
+                    selectedProjId
+                }
+            })
+            .then((response)=>{
+                console.log("Fetching Tasks on Dashboard(selectedProject) justafter addingTask = ",response.data);
+                selectedProjectAllTasks = response.data;
+                dispatch({
+                    type : "handleAddingTask",
+                    payload : {
+                        selectedProjectAllTasks
+                    }
+                })
+            })
+        })
+        .catch((error)=>{
+            console.log("addTask Error = ",error);
+        })
+    }
+
 
 
 
@@ -295,7 +341,7 @@ useEffect( ()=>{
 
         content = <SelectedProject 
             selectedProject={selectedProject[0]}
-
+            addingTask={handleAddingTask}
             selectedProjectAllTasks={selectedProjectAllTasks}
         ></SelectedProject>
     }
