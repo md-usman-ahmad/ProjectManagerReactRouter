@@ -1,37 +1,39 @@
 import { Card } from "./Card";
+import { TaskCard } from "./TaskCard.jsx"
 import { Input } from "./input";
 
 import { useRef } from "react";
 
-export function SelectedProject({selectedProject}) {
+export function SelectedProject({selectedProject  , selectedProjectAllTasks}) {
+
   return (
     <>
-    <div class=" mx-auto px-10 py-2 rounded-lg ">
+    <div className=" mx-auto px-10 py-2 rounded-lg ">
         <div className="w-full">
             <Card  {...selectedProject} ></Card>
         </div>
-      <div class="max-w-4xl mx-auto px-10  bg-white rounded-lg ">
-        <form class="pt-20">
-          <div class=" mb-6 flex gap-2">
-            <Input id="TaskTitle"  type="text" placeholder="Enter Title"></Input>
+      <div className="max-w-4xl mx-auto px-10  bg-white rounded-lg ">
+        <div className="pt-20">
+          <div className=" mb-6 flex gap-2">
+            <Input id="TaskTitle" type="text" placeholder="Enter Title"></Input>
             <Input id="TaskTitle"  type="text" placeholder="Enter Description"></Input>
-            <button
-              class="shadow bg-gray-800 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 mx-2 rounded"
+            <button 
+              className="shadow bg-gray-800 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 mx-2 rounded"
               type="button"
             >
               Add
             </button>
           </div>
-        </form>
+        </div>
 
-        {/* {selectedProjectTasks.length === 0 && <h1 className="text-center">Add Tasks for this Project</h1>}
-        {selectedProjectTasks.length > 0 && selectedProjectTasks.map((item) => {
+        {selectedProjectAllTasks.length === 0 && <h1 className="text-center">Add Tasks for this Project</h1>}
+        {selectedProjectAllTasks.length > 0 && selectedProjectAllTasks.map((item) => {
           return (
             <>
-                <TaskCard key={item.taskId} item={item} ></TaskCard>
+                <TaskCard key={item.taskId} {...item} ></TaskCard>
             </>
         );
-        })} */}
+        })}
       </div>
       </div>
     </>

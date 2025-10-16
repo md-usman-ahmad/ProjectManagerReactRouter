@@ -16,13 +16,18 @@ export function Dashboard(){
 // });
 
 const reducerFn = (projectState,action)=>{
-    if(action.type === "FetchingDataOnLoggedIn"){
+    if(action.type === "FetchingAllProjectsOnLoggedIn"){
         console.log("bbbbbbbbbbbb")
         return {
             ...projectState,
             projects : action.payload.currentLoggedInUserAllProjects
         }
-    }else if(action.type === "handleOnClickAddProject"){
+    } else if(action.type === "FetchingSelectedProjectTasks"){
+        return {
+            ...projectState,
+            tasks : action.payload.selectedProjectAllTasks
+        }
+    } else if(action.type === "handleOnClickAddProject"){
         return {
             ...projectState,
             selectedProjectId : null
@@ -38,6 +43,7 @@ const reducerFn = (projectState,action)=>{
             projects : action.payload.currentLoggedInUserAllProjects
         }
     } else if(action.type === "handleOnSelectingProject"){
+        console.log("projectId 2 = ",action.payload.projectId);
         return {
                 ...projectState,
                 selectedProjectId : action.payload.projectId
@@ -54,7 +60,7 @@ const reducerFn = (projectState,action)=>{
             projects : action.payload.currentLoggedInUserAllProjects,
             selectedProjectId : action.payload.projectId
         }
-    } else {
+    }else {
         return {
         ...projectState
       }
@@ -67,7 +73,7 @@ const [projectState , dispatch] = useReducer(reducerFn, {
 })
 console.log("projectState = ",projectState);
 
-let content,currentLoggedInUserAllProjects;
+let content,currentLoggedInUserAllProjects , selectedProjectAllTasks ,  selectedProjId;
 
 
 const navigate = useNavigate();
@@ -89,7 +95,7 @@ useEffect( ()=>{
             console.log("getProject response = ",response);
             currentLoggedInUserAllProjects = response.data; 
             dispatch({
-                type : "FetchingDataOnLoggedIn",
+                type : "FetchingAllProjectsOnLoggedIn",
                 payload : {
                     currentLoggedInUserAllProjects
                 }
@@ -104,7 +110,37 @@ useEffect( ()=>{
     }
 },[])
 
+useEffect( ()=>{
+    // selectedProject ke saare tasks fetch krrhe DB se 
+    console.log("useEffect, selectedProjectId  = ",projectState.selectedProjectId);
+        selectedProjId = projectState.selectedProjectId;
+    axios({
+            method : "GET",
+            url : "http://localhost:4500/taskOperations",
+            headers : {
+                authorization : localStorage.getItem("token")
+            },
+            params : {
+                selectedProjId
+            }
+        })
+        .then((response)=>{
+            console.log("getTasks response.data = ",response.data);
+            // alert(response.data.message);
+            selectedProjectAllTasks = response.data;
+            dispatch({
+                type : "FetchingSelectedProjectTasks",
+                payload : {
+                    selectedProjectAllTasks
+                }
+            })
+        })
+        .catch((error)=>{
+            console.log("getTask error = ",error)
+        })
+},[projectState.selectedProjectId])
 
+        // Project Operations 
     const handleOnClickAddProject = ()=>{
         dispatch({
             type : 'handleOnClickAddProject',
@@ -161,12 +197,12 @@ useEffect( ()=>{
         
     }
     const handleOnSelectingProject = (projectId)=>{
+        console.log("projectId 1 = ",projectId);
         dispatch({
             type : "handleOnSelectingProject",
             payload : {
                 projectId,
             }
-
         })
     }
     const handleProjectDelete = (projectId)=>{
@@ -241,21 +277,26 @@ useEffect( ()=>{
         })
     }   
 
+    
+
 
 
     if(projectState.selectedProjectId === undefined){
         content = <Mainmenu></Mainmenu>
     }
     if(projectState.selectedProjectId === null){
-        content = <NewProject onClickCancelBtn={handleProjectCancelBtn} addingProject={handleAddingProject}></NewProject>
+        content = <NewProject onClickCancelBtn={handleProjectCancelBtn} addingProject={handleAddingProject} ></NewProject>
     }
 
     if(projectState.selectedProjectId){
         const selectedProject = projectState.projects.filter( (item)=>(item.projectId === projectState.selectedProjectId));
         console.log("selectedProject = ",selectedProject);
+        const selectedProjectAllTasks = projectState.tasks;
 
         content = <SelectedProject 
             selectedProject={selectedProject[0]}
+
+            selectedProjectAllTasks={selectedProjectAllTasks}
         ></SelectedProject>
     }
 
