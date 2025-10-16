@@ -32,7 +32,7 @@ create table tasks(
     pId int,
     createdBy int,
     foreign key (createdBy) references users(userId),
-    foreign key (pId) references projects(projectId)
+    foreign key (pId) references projects(projectId) ON DELETE CASCADE
 );
 select * from tasks;
 -- delete from tasks where taskId = 2
